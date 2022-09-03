@@ -1,32 +1,27 @@
-#include <bits/stdc++.h>
-#define MAX 100000
+#include<bits/stdc++.h>
 using namespace std;
 
-int arr[MAX+1];
+int n, k;
+int arr[100004];
+queue<int> Q;
+
+void BFS() {
+	while(!Q.empty()) {
+		int x=Q.front();
+		Q.pop();
+		if(x==k) return;
+		if(x-1>=0 && x-1<=100000 && arr[x-1]==0) {arr[x-1]=arr[x]+1; Q.push(x-1);}
+		if(x+1>=0 && x+1<=100000 && arr[x+1]==0) {arr[x+1]=arr[x]+1; Q.push(x+1);}
+		if(x*2>=0 && x*2<=100000 && arr[x*2]==0) {arr[x*2]=arr[x]+1; Q.push(x*2);}
+	}
+}
 
 int main() {
-	int n, k;
-	queue<int> Q;
-	scanf("%d %d", &n, &k);
+	ios_base::sync_with_stdio(0);
+	cin>>n>>k;
+	arr[n]=1;
 	Q.push(n);
-	arr[n]=0;
-	while(!Q.empty()) {
-		int loc=Q.front();
-		Q.pop();
-		if(loc==k) break;
-		if(loc-1>=0 && arr[loc-1]==0) {
-			Q.push(loc-1);
-			arr[loc-1]=arr[loc]+1;
-		}
-		if(loc+1<=MAX && arr[loc+1]==0) {
-			Q.push(loc+1);
-			arr[loc+1]=arr[loc]+1;
-		}
-		if(loc*2<=MAX && arr[loc*2]==0) {
-			Q.push(loc*2);
-			arr[loc*2]=arr[loc]+1;
-		}
-	}
-	printf("%d\n", arr[k]);
+	BFS();
+	cout<<arr[k]-1;
 	return 0;
 }
