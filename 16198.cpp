@@ -2,41 +2,48 @@
 using namespace std;
 
 int n, res=0;
-int inp[14], cpy[14], ord[14], chk[14];
+int inp[14], cpy[14], ord[14];
+bool chk[14];
+
+void input() {
+	cin>>n;
+	for(int i=0; i<n; i++) cin>>inp[i];
+	memcpy(cpy, inp, sizeof cpy);
+}
 
 void DFS(int L) {
 	if(L==n-2) {
 		int tmp=0;
 		for(int i=0; i<n-2; i++) {
-			inp[ord[i]]=0;
+			cpy[ord[i]]=0;
 			int l=ord[i]-1, r=ord[i]+1;
-			while(inp[l]==0) l--;
-			while(inp[r]==0) r++;
-			tmp+=inp[l]*inp[r];
+			while(cpy[l]==0) l--;
+			while(cpy[r]==0) r++;
+			tmp+=cpy[l]*cpy[r];
 		}
 		res=max(res, tmp);
-		memcpy(inp, cpy, sizeof inp);
+		memcpy(cpy, inp, sizeof cpy);
 		return;
 	}
 	
 	for(int i=1; i<=n-2; i++) {
-		if(chk[i]==0) {
-			chk[i]=1;
+		if(!chk[i]) {
+			chk[i]=true;
 			ord[L]=i;
 			DFS(L+1);
-			chk[i]=0;
+			chk[i]=false;
 		}
 	}
 }
 
+void output() {
+	cout<<res<<"\n";
+}
+
 int main() {
 	ios_base::sync_with_stdio(0);
-	cin>>n;
-	for(int i=0; i<n; i++) {
-		cin>>inp[i];
-		cpy[i]=inp[i];
-	}
+	input();
 	DFS(0);
-	cout<<res;
+	output();
 	return 0;
 }
