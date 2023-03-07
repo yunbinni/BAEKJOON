@@ -1,45 +1,86 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-int n, res=INT_MAX;
-int arr[24][24], chk[24];
+int N;
+vector<vector<int>> S;
 
-void DFS(int L, int s) {
-	if(L==n/2) {
-		vector<int> A, B;
-		for(int i=0; i<n; i++) {
-			if(chk[i]==1) A.push_back(i);
-			if(chk[i]==0) B.push_back(i);
+vector<bool> check;
+
+int answer = 100;
+
+void input();
+void DFS(int L, int s);
+void output();
+
+int main() {
+	
+	input();
+	DFS(1, 1);
+	output();
+	
+	return 0;
+}
+
+void input() {
+	cin >> N;
+	
+	S.assign(N + 1, vector<int>(N + 1, 0));
+	
+	for(int i = 1; i <= N; i++)
+		for(int j = 1; j <= N; j++)
+			cin >> S[i][j];
+	
+	check.assign(N + 1, false);
+}
+
+void DFS(int L, int s) { // level, start
+	
+	if(L > N/2)
+	{
+		vector<int> start;
+		vector<int> link;
+		
+		for(int i = 1; i <= N; i++)
+		{
+			if(check[i]) start.push_back(i);
+			if(!check[i]) link.push_back(i);
 		}
-		int a=0, b=0;
-		for(int i=0; i<A.size(); i++) {
-			for(int j=0; j<A.size(); j++) {
-				if(i==j) continue;
-				a+=arr[A[i]][A[j]];
+		
+		int start_stats = 0;
+		int link_stats = 0;
+		
+		for(int i : start) {
+			for(int j : start)
+			{
+				if(i == j) continue;
+				start_stats += S[i][j];
 			}
 		}
-		for(int i=0; i<B.size(); i++) {
-			for(int j=0; j<B.size(); j++) {
-				if(i==j) continue;
-				b+=arr[B[i]][B[j]];
+		
+		for(int i : link) {
+			for(int j : link)
+			{
+				if(i == j) continue;
+				link_stats += S[i][j];
 			}
 		}
-		res=min(res, abs(a-b));
+		
+		answer = min(answer, abs(start_stats - link_stats));
+		
 		return;
 	}
 	
-	for(int i=s; i<n; i++) {
-		chk[i]=1;
-		DFS(L+1, i+1);
-		chk[i]=0;
+	for(int i = s; i <= N; i++)
+	{
+		if(!check[i])
+		{
+			check[i] = true;
+			DFS(L + 1, i + 1);
+			check[i] = false;
+		}
 	}
 }
 
-int main() {
-	ios_base::sync_with_stdio(0);
-	cin>>n;
-	for(int i=0; i<n; i++) for(int j=0; j<n; j++) cin>>arr[i][j];
-	DFS(0, 0);
-	cout<<res;
-	return 0;
+void output() {
+	cout << answer << "\n";
 }
